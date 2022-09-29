@@ -8,7 +8,7 @@
 
 <VBox prefHeight="327.0" prefWidth="412.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/18">
    <children>
-      <Label text="About">
+      <Label text="About"> // Label serve para identificar a tela, como se fosse uma etiqueta mesmo;
          <font>
             <Font name="System Bold" size="18.0" />
          </font>
