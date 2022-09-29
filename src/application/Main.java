@@ -9,6 +9,9 @@ import javafx.scene.control.ScrollPane;
 import javafx.stage.Stage;
 
 public class Main extends Application {
+	
+	private static Scene mainScene; // Guardando a referência da cena nesse atributo; (Boa prática deixar ele privado)
+	
 	@Override
 	public void start(Stage primaryStage) {
 		try {
@@ -17,7 +20,7 @@ public class Main extends Application {
 			
 			scrollPane.setFitToHeight(true);
 			scrollPane.setFitToWidth(true);
-			Scene mainScene = new Scene(scrollPane); // Cena principal, já instanciando como arg o objeto principal da View (Anchor Pane);
+			mainScene = new Scene(scrollPane); // Cena principal, já instanciando como arg o objeto principal da View (Anchor Pane);
 			primaryStage.setScene(mainScene);
 			primaryStage.setTitle("Sample JavaFX application");
 			primaryStage.show();
@@ -25,6 +28,10 @@ public class Main extends Application {
 		catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public static Scene getMainScene() { // Jà que o método estático é privado, fizemos um método para referenciar essa cena;
+		return mainScene;
 	}
 	
 	public static void main(String[] args) {
