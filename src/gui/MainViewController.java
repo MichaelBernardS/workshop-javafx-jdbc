@@ -53,7 +53,7 @@ public class MainViewController implements Initializable {
 	public void initialize(URL uri, ResourceBundle rb) {	
 	}
 	
-	private synchronized <T> void loadView(String absoluteName, Consumer <T> initializingAction) { // Absolute pq vms passar o caminho absoluto; Synchronized pra garantir que o processamento não interrompa, já que operações gráfica são multithreads;
+	private synchronized <T> void loadView(String absoluteName, Consumer <T> initializingAction) { // Absolute pq vms passar o caminho absoluto; Synchronized pra garantir que o processamento não interrompa, já que operações gráfica são multithreads; Interface funcional Consumer, tornando a função genérica;
 		try {
 			FXMLLoader loader = new FXMLLoader(getClass().getResource(absoluteName));
 			VBox newVBox = loader.load(); // Carregar a view;
@@ -66,10 +66,10 @@ public class MainViewController implements Initializable {
 			mainVBox.getChildren().add(mainMenu);
 			mainVBox.getChildren().addAll(newVBox.getChildren());
 			
-			// Comando especial para ativar o que passar como parâmetro na função;
+			// Comandos especiais para ativar o que passar como parâmetro na função (p abrir a tela na hr q abrir o DepartmentList);
 			
 			T controller = loader.getController(); // getController vai retornar um controlador do tipo que chamar acima, no caso, DepartmentListController;
-			initializingAction.accept(controller); // Executar a ação, através do accept do consumer;
+			initializingAction.accept(controller); // Executar a ação, através do accept do Consumer;
 		}
 		catch (IOException e) {
 			Alerts.showAlert("IO Exception", "Error loading view", e.getMessage(), AlertType.ERROR);
