@@ -45,9 +45,10 @@ public class DepartmentListController implements Initializable {
 	private ObservableList<Department> obsList;
 	
 	@FXML
-	public void onBtNewAction(ActionEvent event) { // Adicionado arg para ter uma referência para o controle que recebeu o evento; E a partir do evento, vai ter condição de acessar o Stage;
+	public void onBtNewAction(ActionEvent event) { // Adicionado arg para ter uma referência para o controle que recebeu o evento; E a partir do evento, vai ter condição de acessar o Stage; Botão p cadastrar um novo departamento;
 		Stage parentStage = Utils.currentStage(event); // Referência pro stage atual, e passando pra criar a janela de formulário;
-		createDialogForm("/gui/DepartmentForm.fxml", parentStage); // 1 - O formulário que abriremos; 2 - Janela pai;
+		Department obj = new Department(); // Já que vamos colocar um novo departamento, vamos instanciar um vazio, sem nenhum dado;
+		createDialogForm(obj, "/gui/DepartmentForm.fxml", parentStage); // 1 - Parâmetro objeto do departamento, para injetar no controlador do formulário; 2 - O formulário que abriremos; 3 - Janela pai;
 	}
 	
 	public void setDepartmentService(DepartmentService service) { // Ter a condinção de injetar dependência, de qualquer lugar, e não instanciar direto na classe; Isso é um princípio solid, que é a inversão de controle, são boas práticas, de fzer um set pra ter essa possibilidade, e não instanciar direto na classe;
@@ -76,10 +77,14 @@ public class DepartmentListController implements Initializable {
 		tableViewDepartment.setItems(obsList);
 	}
 	
-	private void createDialogForm(String absoluteName, Stage parentStage) { // Formulário pra preencher um novo departamento; Qnd é criado uma janela de diálogo, é necessário informar quem é o Stage que criou essa janela de diálogo, por isto, foi passado por param;
+	private void createDialogForm(Department obj, String absoluteName, Stage parentStage) { // Formulário pra preencher um novo departamento; Qnd é criado uma janela de diálogo, é necessário informar quem é o Stage que criou essa janela de diálogo, por isto, foi passado por param;
 		try {
 			FXMLLoader loader = new FXMLLoader(getClass().getResource(absoluteName));
 			Pane pane = loader.load(); // Carregando a view;
+			
+			DepartmentFormController controller = loader.getController(); // Pegando referência do controlador;
+			controller.setDepartment(obj); // Injetando o departamento no controlador;
+			controller.updateFormData(); // Carregar os dados desse objeto no formulário;
 			
 			Stage dialogStage = new Stage();
 			dialogStage.setTitle("Enter Department data");

@@ -9,8 +9,11 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import model.entities.Department;
 
 public class DepartmentFormController implements Initializable {
+	
+	private Department entity;
 	
 	@FXML
 	private TextField txtId;
@@ -26,6 +29,10 @@ public class DepartmentFormController implements Initializable {
 	
 	@FXML
 	private Button btCancel;
+	
+	public void setDepartment(Department entity) { // Dessa forma, o controlador tem uma instância do Departamento;
+		this.entity = entity;
+	}
 	
 	@FXML
 	public void onBtSaveAction() {
@@ -46,4 +53,14 @@ public class DepartmentFormController implements Initializable {
 		Constraints.setTextFieldInteger(txtId); // Só aceitar números no Id;
 		Constraints.setTextFieldMaxLength(txtName, 30); // Máximo 30 caracteres no nome;
 	}
+	
+	public void updateFormData() {
+		if (entity == null) { // Programação defensiva, caso o programador esqueça de inserir um id;
+			throw new IllegalStateException("Entity was null");
+		}
+		
+		txtId.setText(String.valueOf(entity)); // Caixinha de texto ela trabalha com String, então convertemos (String.valueOf) o valor inteiro, pra String;
+		txtName.setText(entity.getName());
+	}
+	
 }
