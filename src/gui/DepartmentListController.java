@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
-
 import application.Main;
 import gui.util.Alerts;
 import gui.util.Utils;
@@ -47,7 +46,7 @@ public class DepartmentListController implements Initializable {
 	@FXML
 	public void onBtNewAction(ActionEvent event) { // Adicionado arg para ter uma referência para o controle que recebeu o evento; E a partir do evento, vai ter condição de acessar o Stage; Botão p cadastrar um novo departamento;
 		Stage parentStage = Utils.currentStage(event); // Referência pro stage atual, e passando pra criar a janela de formulário;
-		Department obj = new Department(); // Já que vamos colocar um novo departamento, vamos instanciar um vazio, sem nenhum dado;
+		Department obj = new Department(); // Já que vamos colocar um novo departamento, vamos instanciar um vazio, sem nenhum dado; Passar um objeto para o formulário, é uma prática comum qnd estamos programando no padrão MVC;
 		createDialogForm(obj, "/gui/DepartmentForm.fxml", parentStage); // 1 - Parâmetro objeto do departamento, para injetar no controlador do formulário; 2 - O formulário que abriremos; 3 - Janela pai;
 	}
 	
@@ -84,6 +83,7 @@ public class DepartmentListController implements Initializable {
 			
 			DepartmentFormController controller = loader.getController(); // Pegando referência do controlador;
 			controller.setDepartment(obj); // Injetando o departamento no controlador;
+			controller.setDepartmentService(new DepartmentService()); // Injeção da dependência no controlador;
 			controller.updateFormData(); // Carregar os dados desse objeto no formulário;
 			
 			Stage dialogStage = new Stage();
