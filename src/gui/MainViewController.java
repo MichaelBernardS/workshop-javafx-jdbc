@@ -17,6 +17,7 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.VBox;
 import model.services.DepartmentService;
+import model.services.SellerService;
 
 public class MainViewController implements Initializable {
 	
@@ -33,11 +34,14 @@ public class MainViewController implements Initializable {
 	
 	@FXML
 	public void onMenuItemSellerAction() { // Padrão usado nos EventHandlers. Começa com on, dps o nome do controle, dps o evento (Action é padrão) que vai tratar;
-		System.out.println("onMenuItemSellerAction");
+		loadView("/gui/SellerList.fxml", (SellerListController controller) -> { // Antes feito em uma outra função, foi movido para cá para passar como parâmetro, servindo para inicializar o controlador; Parametrização com o Consumer T, para não precisar criar mais versões da função LoadView;
+			controller.setSellerService(new SellerService());
+			controller.updateTableView();
+		}); 
 	}
 	
 	@FXML
-	public void onMenuItemDepartmentAction() {
+	public void onMenuItemDepartmentAction() { // Padrão usado nos EventHandlers. Começa com on, dps o nome do controle, dps o evento (Action é padrão) que vai tratar;
 		loadView("/gui/DepartmentList.fxml", (DepartmentListController controller) -> { // Antes feito em uma outra função, foi movido para cá para passar como parâmetro, servindo para inicializar o controlador; Parametrização com o Consumer T, para não precisar criar mais versões da função LoadView;
 			controller.setDepartmentService(new DepartmentService());
 			controller.updateTableView();
