@@ -3,9 +3,11 @@ package gui;
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 import application.Main;
+import db.DbIntegrityException;
 import gui.listerners.DataChangeListener;
 import gui.util.Alerts;
 import gui.util.Utils;
@@ -19,6 +21,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -44,6 +47,9 @@ public class DepartmentListController implements Initializable, DataChangeListen
 	
 	@FXML
 	private TableColumn<Department, Department> tableColumnEDIT; // Criado o atributo para podermos atualizar departamento;
+	
+	@FXML
+	private TableColumn<Department, Department> tableColumnREMOVE; // Criado o atributo para podermos remover departamento;
 	
 	@FXML
 	private Button btNew;
@@ -82,6 +88,7 @@ public class DepartmentListController implements Initializable, DataChangeListen
 		obsList = FXCollections.observableArrayList(list);
 		tableViewDepartment.setItems(obsList);
 		initEditButtons(); // Método que acrescenta o botão com o texto edit em cada linha da tabela; E todo botão que for clicado, abre o formulário de edição;
+		initRemoveButtons();
 	}
 	
 	private void createDialogForm(Department obj, String absoluteName, Stage parentStage) { // Formulário pra preencher um novo departamento; Qnd é criado uma janela de diálogo, é necessário informar quem é o Stage que criou essa janela de diálogo, por isto, foi passado por param;
@@ -130,5 +137,42 @@ public class DepartmentListController implements Initializable, DataChangeListen
 								event -> createDialogForm(obj, "/gui/DepartmentForm.fxml", Utils.currentStage(event))); // Na hora de criar a janela do formulário, passa o obj, que é o departamento da linha que tiver o botão de edição que clicar, ou seja, pegando um objeto preenchido com departamento e criando a tela de cadastro já com esse objeto preenchido;  E todo botão que for clicado, abre o formulário de edição;
 			}
 		});
+	}
+	
+	private void initRemoveButtons() {
+		tableColumnREMOVE.setCellValueFactory(param -> new ReadOnlyObjectWrapper<>(param.getValue()));
+		tableColumnREMOVE.setCellFactory(param -> new TableCell<Department, Department>() {
+			private final Button button = new Button("remove");
+			
+			@Override
+			protected void updateItem(Department obj, boolean empty) {
+				super.updateItem(obj, empty);
+				
+				if (obj == null) {
+					setGraphic(null);
+					return;
+				}
+				
+				setGraphic(button);
+				button.setOnAction(event -> removeEntity(obj));
+			}
+		});
+	}
+
+	private void removeEntity(Department obj) { // Remoção de um departamento; Operação para remover uma entidade;
+		Optional<ButtonType> result = Alerts.showConfirmation("Confirmation", "Are you sure to delete?"); // Resultado desse Alert, que vai ser um botão clicado, atribuido a uma variável do tipo ButtonType;
+		
+		if (result.get() == ButtonType.OK) { // .get pois o optional, carrega o outro objeto dentro dele, podendo estar presente ou não, então p acessar este objeto dentro do optional, usa-se o get; Ou seja, se apertar no OK, confirmou a deleção;
+			if (service == null) { // Passou desse if, significa que o service foi instanciado;
+				throw new IllegalStateException("Service was null");
+			}
+			try {
+				service.remove(obj); // Chamar a operação de remover;
+				updateTableView(); // Forçar a atualizar os dados da tabela;
+			}
+			catch (DbIntegrityException e) {
+				Alerts.showAlert("Error removing object", null, e.getMessage(), AlertType.ERROR);
+			}
+		}
 	}
 }

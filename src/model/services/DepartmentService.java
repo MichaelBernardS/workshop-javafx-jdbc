@@ -22,6 +22,10 @@ public class DepartmentService {
 			dao.update(obj);
 		}
 	}
+	
+	public void remove(Department obj) { // Remover um departamento do banco de dados;
+		dao.deleteById(obj.getId());
+	}
 }
 
 // Dados mocados (Mock), são dados de "mentira", e não do banco de dados; Dados criados falsos, para retornar algo;
