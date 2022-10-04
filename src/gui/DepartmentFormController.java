@@ -3,7 +3,9 @@ package gui;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.Set;
 
 import db.DbException;
 import gui.listerners.DataChangeListener;
@@ -18,6 +20,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import model.entities.Department;
+import model.exceptions.ValidationException;
 import model.services.DepartmentService;
 
 public class DepartmentFormController implements Initializable {
@@ -69,6 +72,9 @@ public class DepartmentFormController implements Initializable {
 			notifyDataChangeListeners(); // Após o salvamento, notificaremos (emissão do evento - Subject) os listeners que a lista foi atualizada;
 			Utils.currentStage(event).close(); // Pegando referência da janela atual, após o evento (ação), e fechar ela;
 		}
+		catch (ValidationException e) { // O try vai chamar o getFormData, onde pode gerar um ValidationException;
+			setErrorMessages(e.getErrors()); // Coleção de erros; Impressão da mensagem de erro;
+		}
 		catch (DbException e) {
 			Alerts.showAlert("Error saving object", null, e.getMessage(), AlertType.ERROR);
 		}
@@ -83,8 +89,19 @@ public class DepartmentFormController implements Initializable {
 	private Department getFormData() { // Função responsável por pegar os dados nas caixinhas do formulário, e instanciar um departamento;
 		Department obj = new Department();
 		
+		ValidationException exception = new ValidationException("Validation error"); // Apenas instanciando uma exceção;
+		
 		obj.setId(Utils.tryParseToInt(txtId.getText())); // getText tá no formato de String, então, usamos a função que fizemos p converter p inteiro, lembrando que se não for um número inteiro, retorna nulo;
+		
+		if (txtName.getText() == null || txtName.getText().trim().equals("")) { // trim para eliminar qualquer campo com espaço em branco no começo ou final, validando a partir do equals, se for igual ao espaço vazio, quer dizer q tá vazio;
+			exception.addError("name", "Field can't be empty"); // Lançando uma exceção, para caso o campo nome seja vazio;
+		}
 		obj.setName(txtName.getText());
+		
+		if (exception.getErrors().size() > 0) { // Testando se na coleção de erros tem pelo menos um erro;
+			throw exception; // Se isso for verdade, lançará a exceção; Se não tiver nenhum erro para lançar, vai retornar o objeto;
+		}
+		
 		return obj;
 	}
 
@@ -112,4 +129,11 @@ public class DepartmentFormController implements Initializable {
 		txtName.setText(entity.getName());
 	}
 	
+	private void setErrorMessages(Map<String, String> errors) { // Método responsável por pegar os erros que estão na exceção, e escrevê-los na tela, preenchendo as msgs no Label;
+		Set<String> fields = errors.keySet(); // Outra estrutura de dados para setar os campos; Conjunto de erros;
+		
+		if (fields.contains("name")) { // Testando se existe a chave name;
+			labelErrorName.setText(errors.get("name")); // Se existir, setar o texto dele, a essa msg de erro; Msg correspondente ao campo name;
+		}
+	}
 }
