@@ -4,10 +4,12 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
+
 import application.Main;
 import gui.listerners.DataChangeListener;
 import gui.util.Alerts;
 import gui.util.Utils;
+import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -17,6 +19,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -37,7 +40,10 @@ public class DepartmentListController implements Initializable, DataChangeListen
 	private TableColumn<Department, Integer> tableColumnId; // Primeira coluna - Integer por causa do id, q é inteiro;
 	
 	@FXML
-	private TableColumn<Department, String> tableColumnName;
+	private TableColumn<Department, String> tableColumnName; // Segunda coluna - String por causa do nome, q é String;
+	
+	@FXML
+	private TableColumn<Department, Department> tableColumnEDIT; // Criado o atributo para podermos atualizar departamento;
 	
 	@FXML
 	private Button btNew;
@@ -75,6 +81,7 @@ public class DepartmentListController implements Initializable, DataChangeListen
 		List<Department> list = service.findAll();	
 		obsList = FXCollections.observableArrayList(list);
 		tableViewDepartment.setItems(obsList);
+		initEditButtons(); // Método que acrescenta o botão com o texto edit em cada linha da tabela; E todo botão que for clicado, abre o formulário de edição;
 	}
 	
 	private void createDialogForm(Department obj, String absoluteName, Stage parentStage) { // Formulário pra preencher um novo departamento; Qnd é criado uma janela de diálogo, é necessário informar quem é o Stage que criou essa janela de diálogo, por isto, foi passado por param;
@@ -104,6 +111,24 @@ public class DepartmentListController implements Initializable, DataChangeListen
 	@Override
 	public void onDataChanged() { // Notificação que os dados foram alterados;
 		updateTableView(); // Atualizar os dados da tabelinha;
-		
+	}
+	
+	private void initEditButtons() { // Método responsável por criar cada botão de edição em cada linha da tabela, para ser possível clicar em cada botão e editar o departamento; (Código específico pego de um framework no stackoverflow);
+		tableColumnEDIT.setCellValueFactory(param -> new ReadOnlyObjectWrapper<>(param.getValue()));
+		tableColumnEDIT.setCellFactory(param -> new TableCell<Department, Department>() { // Criado um objeto CellFactory responsável por instanciar os botões e configurar os botões;
+			private final Button button = new Button("edit");
+			
+			@Override
+			protected void updateItem(Department obj, boolean empty) {
+				super.updateItem(obj, empty);
+				if (obj == null) {
+					setGraphic(null);
+					return;
+				}
+				setGraphic(button);
+				button.setOnAction(
+								event -> createDialogForm(obj, "/gui/DepartmentForm.fxml", Utils.currentStage(event))); // Na hora de criar a janela do formulário, passa o obj, que é o departamento da linha que tiver o botão de edição que clicar, ou seja, pegando um objeto preenchido com departamento e criando a tela de cadastro já com esse objeto preenchido;  E todo botão que for clicado, abre o formulário de edição;
+			}
+		});
 	}
 }

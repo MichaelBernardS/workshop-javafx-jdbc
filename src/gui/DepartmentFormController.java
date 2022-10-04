@@ -25,7 +25,7 @@ import model.services.DepartmentService;
 
 public class DepartmentFormController implements Initializable {
 	
-	private Department entity;
+	private Department entity; // Entidade relacionada a este formulário, generalizando;
 	
 	private DepartmentService service;
 	
@@ -125,7 +125,7 @@ public class DepartmentFormController implements Initializable {
 			throw new IllegalStateException("Entity was null");
 		}
 		
-		txtId.setText(String.valueOf(entity)); // Caixinha de texto ela trabalha com String, então convertemos (String.valueOf) o valor inteiro, pra String;
+		txtId.setText(String.valueOf(entity.getId())); // Caixinha de texto ela trabalha com String, então convertemos (String.valueOf) o valor inteiro, pra String;
 		txtName.setText(entity.getName());
 	}
 	
