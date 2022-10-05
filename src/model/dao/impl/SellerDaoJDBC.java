@@ -142,7 +142,7 @@ public class SellerDaoJDBC implements SellerDao {
 		obj.setName(rs.getString("Name"));
 		obj.setEmail(rs.getString("Email"));
 		obj.setBaseSalary(rs.getDouble("BaseSalary"));
-		obj.setBirthDate(rs.getDate("BirthDate"));
+		obj.setBirthDate(new java.util.Date(rs.getTimestamp("BirthDate").getTime())); // Desta forma, garante que vai ser o java.util, pois dando o java.util.date, pegando o getTimestamp do JDBC que gera o java.sql.date e pega o getTime dele que é o valor Long desta data, e ai sim istanciar o java.util.date com esse número Long;
 		obj.setDepartment(dep);
 		return obj;
 	}

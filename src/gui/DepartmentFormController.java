@@ -32,7 +32,7 @@ public class DepartmentFormController implements Initializable {
 	private List<DataChangeListener> dataChangeListeners = new ArrayList<>(); // Classe vai guardar uma lista de objetos interessados em receber o evento; Permitindo outros objetos se inscreverem nessa lista, e receber o evento;
 	
 	@FXML
-	private TextField txtId;
+	private TextField txtId; // TextField significa entrar com os dados;
 	
 	@FXML
 	private TextField txtName;

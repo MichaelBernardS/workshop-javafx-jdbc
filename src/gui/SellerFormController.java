@@ -1,8 +1,11 @@
 package gui;
 
 import java.net.URL;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Set;
@@ -17,6 +20,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import model.entities.Seller;
@@ -32,13 +36,31 @@ public class SellerFormController implements Initializable {
 	private List<DataChangeListener> dataChangeListeners = new ArrayList<>(); // Classe vai guardar uma lista de objetos interessados em receber o evento; Permitindo outros objetos se inscreverem nessa lista, e receber o evento;
 	
 	@FXML
-	private TextField txtId;
+	private TextField txtId; // TextField significa entrar com os dados;
 	
 	@FXML
 	private TextField txtName;
 	
 	@FXML
+	private TextField txtEmail;
+	
+	@FXML
+	private DatePicker dpBirthDate; // Para data é utilizado o DatePicker, que é o nome daquele calendáriozinho para escolher uma data;
+	
+	@FXML
+	private TextField txtBaseSalary;
+	
+	@FXML
 	private Label labelErrorName;
+	
+	@FXML
+	private Label labelErrorEmail;
+	
+	@FXML
+	private Label labelErrorBirthDate;
+	
+	@FXML
+	private Label labelErrorBaseSalary;
 	
 	@FXML
 	private Button btSave;
@@ -116,8 +138,11 @@ public class SellerFormController implements Initializable {
 	}
 	
 	private void initializeNodes() { // Aqui colocaremos algumas restrições;
-		Constraints.setTextFieldInteger(txtId); // Só aceitar números no Id;
-		Constraints.setTextFieldMaxLength(txtName, 30); // Máximo 30 caracteres no nome;
+		Constraints.setTextFieldInteger(txtId); // Definindo que o campo id é do tipo Integer, chamando o método já existente;
+		Constraints.setTextFieldMaxLength(txtName, 70); // Máximo 70 caracteres no nome do vendedor;
+		Constraints.setTextFieldDouble(txtBaseSalary);
+		Constraints.setTextFieldMaxLength(txtEmail, 60);
+		Utils.formatDatePicker(dpBirthDate, "dd/MM/yyyy"); // Definindo o formato pra data no DatePicker;
 	}
 	
 	public void updateFormData() {
@@ -125,8 +150,14 @@ public class SellerFormController implements Initializable {
 			throw new IllegalStateException("Entity was null");
 		}
 		
-		txtId.setText(String.valueOf(entity.getId())); // Caixinha de texto ela trabalha com String, então convertemos (String.valueOf) o valor inteiro, pra String;
+		txtId.setText(String.valueOf(entity.getId())); // Pega os dados do objeto e joga nas caixinhas do formulário, ou seja, jogando a entidade(no caso vendedor) no txtId; Caixinha de texto ela trabalha com String, então convertemos (String.valueOf) o valor inteiro, pra String;
 		txtName.setText(entity.getName());
+		txtEmail.setText(entity.getEmail());
+		Locale.setDefault(Locale.US);
+		txtBaseSalary.setText(String.format("%.2f", entity.getBaseSalary())); // Convertendo o campo, pois a caixinha é String, e BaseSalary é double;
+		if (entity.getBirthDate() != null) { // Proteção para converter a data para LocalDate se ela não for nula somente;
+			dpBirthDate.setValue(LocalDate.ofInstant(entity.getBirthDate().toInstant(), ZoneId.systemDefault())); // BirthDate é um objeto do tipo java.util.Date, mas o datepicker trabalha com o LocalDate, pois no computador mostra a data no computador do usuário, utilizando o systemDefault;
+		}
 	}
 	
 	private void setErrorMessages(Map<String, String> errors) { // Método responsável por pegar os erros que estão na exceção, e escrevê-los na tela, preenchendo as msgs no Label;
