@@ -19,15 +19,15 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import model.entities.Department;
+import model.entities.Seller;
 import model.exceptions.ValidationException;
-import model.services.DepartmentService;
+import model.services.SellerService;
 
-public class DepartmentFormController implements Initializable {
+public class SellerFormController implements Initializable {
 	
-	private Department entity; // Entidade relacionada a este formulário, generalizando;
+	private Seller entity; // Entidade relacionada a este formulário, generalizando;
 	
-	private DepartmentService service;
+	private SellerService service;
 	
 	private List<DataChangeListener> dataChangeListeners = new ArrayList<>(); // Classe vai guardar uma lista de objetos interessados em receber o evento; Permitindo outros objetos se inscreverem nessa lista, e receber o evento;
 	
@@ -46,11 +46,11 @@ public class DepartmentFormController implements Initializable {
 	@FXML
 	private Button btCancel;
 	
-	public void setDepartment(Department entity) { // Dessa forma, o controlador tem uma instância do Departamento;
+	public void setSeller(Seller entity) { // Dessa forma, o controlador tem uma instância do vendedor;
 		this.entity = entity;
 	}
 	
-	public void setDepartmentService(DepartmentService service) {
+	public void setSellerService(SellerService service) {
 		this.service = service;
 	}
 	
@@ -86,8 +86,8 @@ public class DepartmentFormController implements Initializable {
 		}
 	}
 
-	private Department getFormData() { // Função responsável por pegar os dados nas caixinhas do formulário, e instanciar um departamento;
-		Department obj = new Department();
+	private Seller getFormData() { // Função responsável por pegar os dados nas caixinhas do formulário, e instanciar um vendedor;
+		Seller obj = new Seller();
 		
 		ValidationException exception = new ValidationException("Validation error"); // Apenas instanciando uma exceção;
 		
@@ -138,4 +138,4 @@ public class DepartmentFormController implements Initializable {
 	}
 }
 
-//Formulário para preencher os dados do departamento;
+// Formulário para preencher os dados do vendedor;

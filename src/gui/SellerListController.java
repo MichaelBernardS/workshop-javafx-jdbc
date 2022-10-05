@@ -1,5 +1,6 @@
 package gui;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.Date;
 import java.util.List;
@@ -16,7 +17,9 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
@@ -24,6 +27,8 @@ import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.Pane;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import model.entities.Seller;
 import model.services.SellerService;
@@ -108,27 +113,27 @@ public class SellerListController implements Initializable, DataChangeListener {
 	}
 	
 	private void createDialogForm(Seller obj, String absoluteName, Stage parentStage) { // Formulário pra preencher um novo departamento; Qnd é criado uma janela de diálogo, é necessário informar quem é o Stage que criou essa janela de diálogo, por isto, foi passado por param;
-//		try {
-//			FXMLLoader loader = new FXMLLoader(getClass().getResource(absoluteName));
-//			Pane pane = loader.load(); // Carregando a view;
-//			
-//			SellerFormController controller = loader.getController(); // Pegando referência do controlador;
-//			controller.setSeller(obj); // Injetando o departamento no controlador;
-//			controller.setSellerService(new SellerService()); // Injeção da dependência no controlador;
-//			controller.subscribeDataChangeListener(this); // Me inscrever para escutar/receber o evento, e qnd for disparado vai ser executado o método onDataChanged abaixo.
-//			controller.updateFormData(); // Carregar os dados desse objeto no formulário;
-//			
-//			Stage dialogStage = new Stage();
-//			dialogStage.setTitle("Enter Seller data");
-//			dialogStage.setScene(new Scene(pane));
-//			dialogStage.setResizable(false); // Se a janela pode ou não ser redimensionada, ou seja, não pode redimensionada;
-//			dialogStage.initOwner(parentStage); // Stage pai dessa janela;
-//			dialogStage.initModality(Modality.WINDOW_MODAL); // Se a janela vai ser modal (Enqnt ela tiver ativa, não clica na janela de trás, ou seja, enqnt não fechar ela, não pode acessar a outra de trás) ou outro comportamento;
-//			dialogStage.showAndWait();
-//		}
-//		catch (IOException e) {
-//			Alerts.showAlert("IO Exception", "Error loading view", e.getMessage(), AlertType.ERROR);
-//		}
+		try {
+			FXMLLoader loader = new FXMLLoader(getClass().getResource(absoluteName));
+			Pane pane = loader.load(); // Carregando a view;
+			
+			SellerFormController controller = loader.getController(); // Pegando referência do controlador;
+			controller.setSeller(obj); // Injetando o departamento no controlador;
+			controller.setSellerService(new SellerService()); // Injeção da dependência no controlador;
+			controller.subscribeDataChangeListener(this); // Me inscrever para escutar/receber o evento, e qnd for disparado vai ser executado o método onDataChanged abaixo.
+			controller.updateFormData(); // Carregar os dados desse objeto no formulário;
+			
+			Stage dialogStage = new Stage();
+			dialogStage.setTitle("Enter Seller data");
+			dialogStage.setScene(new Scene(pane));
+			dialogStage.setResizable(false); // Se a janela pode ou não ser redimensionada, ou seja, não pode redimensionada;
+			dialogStage.initOwner(parentStage); // Stage pai dessa janela;
+			dialogStage.initModality(Modality.WINDOW_MODAL); // Se a janela vai ser modal (Enqnt ela tiver ativa, não clica na janela de trás, ou seja, enqnt não fechar ela, não pode acessar a outra de trás) ou outro comportamento;
+			dialogStage.showAndWait();
+		}
+		catch (IOException e) {
+			Alerts.showAlert("IO Exception", "Error loading view", e.getMessage(), AlertType.ERROR);
+		}
 	}
 
 	@Override
