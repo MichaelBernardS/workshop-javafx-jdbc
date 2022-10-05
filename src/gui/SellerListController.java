@@ -1,6 +1,7 @@
 package gui;
 
 import java.net.URL;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
@@ -35,10 +36,19 @@ public class SellerListController implements Initializable, DataChangeListener {
 	private TableView<Seller> tableViewSeller;
 	
 	@FXML
-	private TableColumn<Seller, Integer> tableColumnId; // Primeira coluna - Integer por causa do id, q é inteiro;
+	private TableColumn<Seller, Integer> tableColumnId; // Primeira coluna do Department - Integer por causa do id;
 	
 	@FXML
-	private TableColumn<Seller, String> tableColumnName; // Segunda coluna - String por causa do nome, q é String;
+	private TableColumn<Seller, String> tableColumnName; // Segunda coluna do Department - String por causa do nome;
+	
+	@FXML
+	private TableColumn<Seller, String> tableColumnEmail; // Primeira coluna do Seller - String por causa do e-mail;
+	
+	@FXML
+	private TableColumn<Seller, Date> tableColumnBirthDate; // Segunda coluna do Seller - Date por causa da data;
+	
+	@FXML
+	private TableColumn<Seller, Double> tableColumnBaseSalary; // Terceira coluna do Seller - Double por causa do salário;
 	
 	@FXML
 	private TableColumn<Seller, Seller> tableColumnEDIT; // Criado o atributo para podermos atualizar departamento;
@@ -67,9 +77,20 @@ public class SellerListController implements Initializable, DataChangeListener {
 		initializeNodes(); // Para iniciar algum componente da tela;
 	}
 
-	private void initializeNodes() {
+	private void initializeNodes() { // Inicialização das colunas;
+		
+		// Departament
+		
 		tableColumnId.setCellValueFactory(new PropertyValueFactory<>("id")); // Padrão do JavaFX para iniciar o comportamento das colunas;
 		tableColumnName.setCellValueFactory(new PropertyValueFactory<>("name"));
+		
+		// Seller
+		
+		tableColumnEmail.setCellValueFactory(new PropertyValueFactory<>("email"));
+		tableColumnBirthDate.setCellValueFactory(new PropertyValueFactory<>("birthDate"));
+		Utils.formatTableColumnDate(tableColumnBirthDate, "dd/MM/yyyy"); // Formatação de data na tabela;
+		tableColumnBaseSalary.setCellValueFactory(new PropertyValueFactory<>("baseSalary"));
+		Utils.formatTableColumnDouble(tableColumnBaseSalary, 2); // Formatação do ponto flutuante na tabela, 2 casas decimais
 		
 		Stage stage = (Stage) Main.getMainScene().getWindow(); // Pega a referência pra janela; O window é uma superclasse do stage, por isso fizemos um downcasting p stage;
 		tableViewSeller.prefHeightProperty().bind(stage.heightProperty()); // TableView para acompanhar a altura (tamanho) da janela;	
