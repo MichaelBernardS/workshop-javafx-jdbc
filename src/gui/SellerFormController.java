@@ -1,9 +1,11 @@
 package gui;
 
 import java.net.URL;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -124,7 +126,7 @@ public class SellerFormController implements Initializable {
 		}
 	}
 
-	private Seller getFormData() { // Função responsável por pegar os dados nas caixinhas do formulário, e instanciar um vendedor;
+	private Seller getFormData() { // Função responsável por pegar os dados preenchidos nas caixinhas do formulário, e carregar (instanciar) um objeto com esses dados (vendedor) retornando no final;
 		Seller obj = new Seller();
 		
 		ValidationException exception = new ValidationException("Validation error"); // Apenas instanciando uma exceção;
@@ -135,6 +137,26 @@ public class SellerFormController implements Initializable {
 			exception.addError("name", "Field can't be empty"); // Lançando uma exceção, para caso o campo nome seja vazio;
 		}
 		obj.setName(txtName.getText());
+		
+		if (txtEmail.getText() == null || txtEmail.getText().trim().equals("")) {
+			exception.addError("email", "Field can't be empty");
+		}
+		obj.setEmail(txtEmail.getText());
+		
+		if (dpBirthDate.getValue() == null) {
+			exception.addError("birthDate", "Field can't be empty");
+		}
+		else {
+			Instant instant = Instant.from(dpBirthDate.getValue().atStartOfDay(ZoneId.systemDefault())); // Forma de pegar um valor no DatePicker, convertendo a data escolhida no horário do pc do usuário, para o instant que é uma data independentemente de localidade;
+			obj.setBirthDate(Date.from(instant)); // Convertendo um instant, para Date, pois BirthDate é tipo Date;
+		}
+		
+		if (txtBaseSalary.getText() == null || txtBaseSalary.getText().trim().equals("")) {
+			exception.addError("baseSalary", "Field can't be empty");
+		}
+		obj.setBaseSalary(Utils.tryParseToDouble(txtBaseSalary.getText())); // Conversão de String(txtBaseSalary) para Double; 
+		
+		obj.setDepartment(comboBoxDepartment.getValue()); // Setando o departamento do ComboBox para o objeto; Vai setar o departamento na hora de criar um novo vendedor;
 		
 		if (exception.getErrors().size() > 0) { // Testando se na coleção de erros tem pelo menos um erro;
 			throw exception; // Se isso for verdade, lançará a exceção; Se não tiver nenhum erro para lançar, vai retornar o objeto;
@@ -193,6 +215,23 @@ public class SellerFormController implements Initializable {
 		comboBoxDepartment.setItems(obsList); // Associando a lista com o ComboBox;
 	}
 	
+	private void setErrorMessages(Map<String, String> errors) { // Método responsável por pegar cada possível erro que estão na exceção, e escrevê-los na tela, preenchendo as msgs no Label;
+		Set<String> fields = errors.keySet(); // Outra estrutura de dados para setar os campos; Conjunto de erros;
+		
+		if (fields.contains("name")) { // Testando se existe um erro com a chave name do vendedor;
+			labelErrorName.setText(errors.get("name")); // Se existir, setar o texto dele, a essa msg de erro no Label; Msg de erro caso tente colocar um vendedor sem nome por exemplo;
+		}
+		else {
+			labelErrorName.setText("");
+		}
+		
+		// Operador ternário para não ficar todos os 4 campos com if e else; No caso, os 3 abaixo é a msm coisa que o name acima;
+		
+		labelErrorEmail.setText((fields.contains("email") ? errors.get("email") : "")); // Interrogação significa se a condição for verdadeira, e após isso, coloca o campo na frente, setando o nome do campo; E dois pontos significa falsa e a condição na frente;
+		labelErrorBirthDate.setText((fields.contains("birthDate") ? errors.get("birthDate") : ""));
+		labelErrorBaseSalary.setText((fields.contains("baseSalary") ? errors.get("baseSalary") : ""));
+	}
+
 	private void initializeComboBoxDepartment() {
 		Callback<ListView<Department>, ListCell<Department>> factory = lv -> new ListCell<Department>() {
 			@Override
@@ -201,18 +240,9 @@ public class SellerFormController implements Initializable {
 				setText(empty ? "" : item.getName());
 			}
 		};
-		
 		comboBoxDepartment.setCellFactory(factory);
 		comboBoxDepartment.setButtonCell(factory.call(null));
-	}
-	
-	private void setErrorMessages(Map<String, String> errors) { // Método responsável por pegar os erros que estão na exceção, e escrevê-los na tela, preenchendo as msgs no Label;
-		Set<String> fields = errors.keySet(); // Outra estrutura de dados para setar os campos; Conjunto de erros;
-		
-		if (fields.contains("name")) { // Testando se existe a chave name;
-			labelErrorName.setText(errors.get("name")); // Se existir, setar o texto dele, a essa msg de erro; Msg correspondente ao campo name;
-		}
-	}
+	}	
 }
 
 // Formulário para preencher os dados do vendedor;
