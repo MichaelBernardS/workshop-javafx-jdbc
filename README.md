@@ -46,9 +46,8 @@ Este projeto utilizando o JavaFX com JDBC, visa conter telas de um sistema de ve
 
 # Tecnologias utilizadas
 ## Back end
-- Java 17
+- Java 17 com JDBC e JavaFX
 - Eclipse IDE
-- JDBC
 - MySQL 8
 
 ## Implantação em produção
