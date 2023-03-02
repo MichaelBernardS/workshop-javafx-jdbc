@@ -40,6 +40,9 @@ Este projeto utilizando o JavaFX com JDBC, visa conter telas de um sistema de ve
 ## Cadastrando novo departamento
 ![Web 11](https://github.com/MichaelBernardS/Assets/blob/main/Cadastrando%20novo%20departamento.png)
 
+## Menu de departamentos presente dentro do vendedor
+![Web 12](https://github.com/MichaelBernardS/Assets/blob/main/Menu%20de%20departamentos%20presente%20dentro%20do%20vendedor.png)
+
 
 # Tecnologias utilizadas
 ## Back end
@@ -50,6 +53,13 @@ Este projeto utilizando o JavaFX com JDBC, visa conter telas de um sistema de ve
 
 ## Implantação em produção
 - Integrar as bibliotecas MySQL e JavaFX
+- Banco de dados MySQL conectado. Utilizado o Workbench do MySql para a manipulação dos dados. 
+![Web 13](https://github.com/MichaelBernardS/Assets/blob/main/Tabela%20de%20departamentos.png)
+
+![Web 14](https://github.com/MichaelBernardS/Assets/blob/main/Tabela%20de%20vendedores.png)
+
+- Necessário configurar o arquivo db.properties para coneção do banco de dados. Nome do banco utilizado: coursejdbc
+![Web 15](https://github.com/MichaelBernardS/Assets/blob/main/db.properties.png)
 
 # Como executar o projeto
 
